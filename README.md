@@ -1,1 +1,1 @@
-# HSE_Mentor-s-Seminar
+# HSE Mentor's Seminar
