@@ -1,0 +1,71 @@
+package main
+
+import (
+	"bufio"
+	"fmt"
+	"os"
+	"strconv"
+	"strings"
+)
+
+func main() {
+	reader := bufio.NewReader(os.Stdin)
+	fmt.Println("Введите выражение (например, 10 + 5 или 10+5):")
+	line, _ := reader.ReadString('\n')
+	line = strings.TrimSpace(line)
+
+	line = strings.ReplaceAll(line, " ", "")
+	line = strings.ReplaceAll(line, "\t", "")
+
+	runes := []rune(line)
+
+	opIdx := -1
+	var op rune
+	for i := 1; i < len(runes); i++ {
+		c := runes[i]
+		isDigit := c >= '0' && c <= '9'
+		if !isDigit && c != '.' && c != ',' {
+			opIdx = i
+			op = c
+			break
+		}
+	}
+
+	if opIdx == -1 {
+		fmt.Println("Ну и где нужные операции? Переделай, используя +, -, *, /")
+		return
+	}
+
+	if op != '+' && op != '-' && op != '*' && op != '/' {
+		fmt.Printf("Не верная операция '%c', переделай (должно быть +, -, *, /).\n", op)
+		return
+	}
+
+	aStr := string(runes[:opIdx])
+	bStr := string(runes[opIdx+1:])
+
+	a, err1 := strconv.ParseFloat(aStr, 64)
+	b, err2 := strconv.ParseFloat(bStr, 64)
+
+	if err1 != nil || err2 != nil {
+		fmt.Printf("И что это за число '%s'? Переделвй", line)
+		return
+	}
+
+	fmt.Print("Результат: ")
+
+	switch op {
+	case '+':
+		fmt.Println(a + b)
+	case '-':
+		fmt.Println(a - b)
+	case '*':
+		fmt.Println(a * b)
+	case '/':
+		if b == 0 {
+			fmt.Println("Сорян, но на ноль делить нельзя.")
+		} else {
+			fmt.Println(a / b)
+		}
+	}
+}
